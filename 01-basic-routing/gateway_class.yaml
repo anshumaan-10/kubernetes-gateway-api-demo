@@ -1,0 +1,10 @@
+# GatewayClass defines a class of Gateways that can be used
+# This is similar to IngressClass in traditional Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: eg  # Name of the GatewayClass - referenced by Gateway resources
+spec:
+  # Controller that will manage Gateways of this class
+  # Envoy Gateway is the controller implementation we're using
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller

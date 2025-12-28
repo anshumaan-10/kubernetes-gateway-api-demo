@@ -1,0 +1,18 @@
+---
+# Service provides stable networking and load balancing for Pods
+# It creates a DNS name and virtual IP for accessing the backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service  # Service name - referenced by HTTPRoute
+  labels:
+    app: product-service
+    service: product-service
+spec:
+  ports:
+    - name: http
+      port: 3000  # Service port (what clients connect to)
+      targetPort: 3000  # Container port (where traffic is forwarded)
+  # Selector determines which Pods receive traffic from this Service
+  selector:
+    app: product-service  # Matches label in Deployment template

@@ -1,0 +1,39 @@
+---
+# Deployment manages a replicated application (Pod)
+# It ensures the desired number of pods are running
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service  # Deployment name
+spec:
+  replicas: 1  # Number of pod replicas to maintain
+  # Selector defines which pods are managed by this Deployment
+  selector:
+    matchLabels:
+      app: product-service
+      version: v1
+  # Template defines the pod specification
+  template:
+    metadata:
+      labels:
+        app: product-service  # Label used by Service selector
+        version: v1  # Version label for traffic splitting demos
+    spec:
+      serviceAccountName: product-service  # ServiceAccount for pod identity
+      containers:
+        # Echo server that responds with request details - useful for testing
+        - image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+          imagePullPolicy: IfNotPresent
+          name: product-service
+          ports:
+            - containerPort: 3000  # Container port where app listens
+          # Environment variables injected into the container
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name  # Inject pod name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace  # Inject namespace

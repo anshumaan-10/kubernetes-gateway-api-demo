@@ -1,0 +1,29 @@
+---
+# HTTPRoute demonstrating weighted traffic distribution
+# 80% traffic to product-service, 20% to user-service (useful for canary deployments)
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: weighted-route
+spec:
+  parentRefs:
+  - name: eg  # Attach to the 'eg' Gateway
+  hostnames:
+  - backends.example  # Hostname for this route
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /  # Match all paths
+    # Weighted traffic distribution for canary/blue-green deployments
+    backendRefs:
+    - group: ""
+      kind: Service
+      name: product-service  # Primary backend
+      port: 3000
+      weight: 8  # 80% of traffic (8/10)
+    - group: ""
+      kind: Service
+      name: user-service  # Canary backend
+      port: 3000
+      weight: 2  # 20% of traffic (2/10)

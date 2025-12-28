@@ -1,0 +1,29 @@
+---
+# HTTPRoute demonstrating traffic splitting across multiple backends
+# Traffic is distributed equally (round-robin) between product-service and user-service
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: multi-service-route
+spec:
+  parentRefs:
+  - name: eg  # Attach to the 'eg' Gateway
+  hostnames:
+  - backends.example  # Hostname for this route
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /  # Match all paths
+    # Multiple backendRefs without weights = equal distribution
+    # Traffic is split evenly using round-robin between both services
+    backendRefs:
+    - group: ""
+      kind: Service
+      name: product-service  # First backend service
+      port: 3000
+    - group: ""
+      kind: Service
+      name: user-service  # Second backend service
+      port: 3000
+

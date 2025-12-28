@@ -1,0 +1,6 @@
+# ServiceAccount provides an identity for processes running in a Pod
+# This allows fine-grained access control using RBAC
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: product-service  # ServiceAccount name - referenced by Deployment

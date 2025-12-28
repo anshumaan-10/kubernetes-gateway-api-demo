@@ -1,0 +1,14 @@
+# Gateway represents an instance of a traffic handling infrastructure
+# It defines how traffic flows into the cluster
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: eg  # Gateway name - will be referenced by HTTPRoute
+spec:
+  # Reference to the GatewayClass that defines which controller manages this Gateway
+  gatewayClassName: eg
+  # Listeners define how the Gateway receives traffic
+  listeners:
+    - name: http  # Listener name
+      protocol: HTTP  # Protocol type (HTTP, HTTPS, TCP, etc.)
+      port: 80  # Port on which the Gateway listens

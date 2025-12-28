@@ -1,0 +1,15 @@
+# Service for the user service - used in traffic splitting demos
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service  # Service name referenced in HTTPRoute backendRefs
+  labels:
+    app: user-service
+    service: user-service
+spec:
+  ports:
+    - name: http
+      port: 3000  # Service port
+      targetPort: 3000  # Pod port
+  selector:
+    app: user-service  # Matches user-service Deployment pods

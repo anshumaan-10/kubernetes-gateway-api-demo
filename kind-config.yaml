@@ -1,0 +1,17 @@
+# Kind cluster configuration with extra port mappings for Gateway access
+# This allows us to access the Gateway from localhost
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: gateway-demo
+nodes:
+  - role: control-plane
+    # Port mapping to access Envoy Gateway from host machine
+    extraPortMappings:
+      # Map localhost:8080 to the Gateway's port 80
+      - containerPort: 80
+        hostPort: 8080
+        protocol: TCP
+      # Map localhost:8443 to the Gateway's port 443 (for future HTTPS demos)
+      - containerPort: 443
+        hostPort: 8443
+        protocol: TCP

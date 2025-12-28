@@ -1,0 +1,29 @@
+---
+# HTTPRoute demonstrating URL rewriting functionality
+# Rewrites incoming path /get to /replace before sending to backend
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-filter-url-rewrite
+spec:
+  parentRefs:
+    - name: eg  # Attach to the 'eg' Gateway
+  # Hostname for this route
+  hostnames:
+    - path.rewrite.example
+  rules:
+    # Match requests to /get
+    - matches:
+      - path:
+          value: "/get"  # Exact path match for /get
+      # Filters modify the request before forwarding to backend
+      filters:
+      - type: URLRewrite  # URL rewriting filter
+        urlRewrite:
+          path:
+            type: ReplacePrefixMatch  # Replace the matched prefix
+            replacePrefixMatch: /replace  # New prefix to use
+      # Backend receives request at /replace instead of /get
+      backendRefs:
+      - name: product-service  # Target Service
+        port: 3000

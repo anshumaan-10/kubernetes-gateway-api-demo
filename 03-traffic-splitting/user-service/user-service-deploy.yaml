@@ -1,0 +1,35 @@
+# User Service Deployment for traffic splitting demonstrations
+# Uses the same echo server image but with different pod name
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service  # User service deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: user-service  # Different app label to distinguish from product-service
+        version: v1
+    spec:
+      serviceAccountName: user-service
+      containers:
+        # Same echo server image - will respond with user-service pod name
+        - image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+          imagePullPolicy: IfNotPresent
+          name: user-service
+          ports:
+            - containerPort: 3000
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name  # Will show user-service-xxx in responses
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
